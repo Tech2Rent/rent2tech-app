@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech2Rent - Gestionale Noleggio Operativo</title>
+    <title>Tech2Rent App</title>
     <style>
-        /* (stili invariati rispetto al file originale) */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
@@ -16,74 +20,174 @@
             align-items: center;
             padding: 20px;
         }
-        .container { width: 100%; max-width: 1400px; }
-        .login-container {
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 60px 40px;
-            max-width: 450px;
-            margin: 0 auto;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        .logo-section {
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 4px 8px rgba(102, 126, 234, 0.4));
+        }
+
+        .app-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: #999;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .demo-section {
+            margin-top: 40px;
+        }
+
+        .demo-section h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .demo-section p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .demo-buttons {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            min-height: 600px;
+            gap: 15px;
         }
-        .logo-section { text-align: center; margin-bottom: 40px; }
-        .logo {
-            font-size: 48px;
-            font-weight: bold;
+
+        .demo-btn {
+            padding: 14px 30px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
-        .tagline { color: #666; font-size: 14px; margin-top: 5px; }
+
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .demo-btn:active {
+            transform: translateY(0);
+        }
+
+        .warning-box {
+            margin-top: 30px;
+            padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #856404;
+            line-height: 1.6;
+        }
+
+        .warning-box strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 25px;
+            border-top: 1px solid #eee;
+            font-size: 11px;
+            color: #ccc;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        /* Responsivo */
+        @media (max-width: 600px) {
+            .card {
+                padding: 40px 25px;
+            }
+
+            .app-title {
+                font-size: 28px;
+            }
+
+            .demo-section h2 {
+                font-size: 20px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- LOGIN SCREEN -->
-    <div id="loginScreen" class="login-container">
-        <div class="logo-section">
-            <div class="logo">🚀 Tech2Rent</div>
-            <p class="tagline">Gestionale Noleggio Operativo</p>
-        </div>
-
-        <div id="errorMessage" class="error-message"></div>
-        <div id="successMessage" class="success-message"></div>
-
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" placeholder="info@tech2rent.it" required>
+    <div class="container">
+        <div class="card">
+            <!-- Logo Section -->
+            <div class="logo-section">
+                <span class="logo-icon">🚀</span>
+                <h1 class="app-title">Tech2Rent</h1>
+                <p class="app-subtitle">Gestionale Noleggio Operativo</p>
             </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="••••••••" required>
-            </div>
-
-            <button type="submit" class="btn-login" id="loginBtn">Accedi</button>
-        </form>
-
-        <p style="text-align: center; margin-top: 30px; font-size: 12px; color: #999;">
-            v1.0 | Powered by Supabase + Vercel
-        </p>
-    </div>
-
-    <!-- DASHBOARD -->
-    <div id="dashboard" class="dashboard">
-        <div class="header">
-            <div class="header-title">📋 Gestionale Tech2Rent</div>
-            <div class="header-right">
-                <div class="user-info">
-                    Utente: <strong id="userEmail"></strong>
+            <!-- Demo Section -->
+            <div class="demo-section">
+                <h2>🎉 Benvenuto</h2>
+                <p>Sistema di gestione innovativo per il noleggio operativo. Accedi per iniziare.</p>
+                
+                <div class="demo-buttons">
+                    <button onclick="enterDemo()" class="demo-btn">
+                        📊 Accedi (Modalità Demo)
+                    </button>
                 </div>
-                <button class="btn-logout" onclick="logout()">Logout</button>
+
+                <div class="warning-box">
+                    <strong>⚠️ Versione DEMO</strong>
+                    Questa è una versione di anteprima. Le funzionalità complete saranno disponibili nella prossima versione.
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                v1.0 | Powered by Tech2Rent + Supabase + Vercel
             </div>
         </div>
-
-        <!-- resto del codice invariato -->
     </div>
+
+    <script>
+        function enterDemo() {
+            alert('✅ Accesso demo confermato!\n\nBenvenuto in Tech2Rent\n\nFunzionalità in sviluppo...');
+            // Qui potrai aggiungere il dashboard in futuro
+        }
+    </script>
 </body>
 </html>
