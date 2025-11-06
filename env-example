@@ -1,0 +1,9 @@
+# Environment Variables per Vercel
+
+VITE_SUPABASE_URL=https://YOUR_PROJECT_ID.supabase.co
+VITE_SUPABASE_ANON_KEY=YOUR_ANON_KEY_HERE
+
+# Istruzioni:
+# 1. Copia i valori da Supabase (Settings → API)
+# 2. Aggiungi le variabili in Vercel (Settings → Environment Variables)
+# 3. Fai il deploy

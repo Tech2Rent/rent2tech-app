@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rent2Tech - Gestionale Noleggio Operativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        /* ========== LOGIN SCREEN ========== */
+        .login-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 60px 40px;
+            max-width: 450px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 600px;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            background-color: #fadbd8;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* ========== DASHBOARD ========== */
+        .dashboard {
+            display: none;
+            flex-direction: column;
+            min-height: 100vh;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: #c0392b;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group-dashboard {
+            margin-bottom: 15px;
+        }
+
+        .form-group-dashboard label {
+            display: block;
+            margin-bottom: 6px;
+            color: #555;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .file-upload {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+        }
+
+        .file-upload:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+            border-color: #764ba2;
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .pratiche-list {
+            grid-column: 1 / -1;
+        }
+
+        .pratica-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pratica-info {
+            flex: 1;
+        }
+
+        .pratica-numero {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .pratica-dettagli {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .pratica-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-draft {
+            background: #e8f4f8;
+            color: #0277bd;
+        }
+
+        .status-submitted {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .status-approved {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-rejected {
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        .success-message {
+            color: #27ae60;
+            background-color: #d5f4e6;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            display: none;
+            border-left: 4px solid #27ae60;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .pratiche-list {
+                grid-column: 1;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 40px 20px;
+                min-height: auto;
+            }
+
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .content {
+                padding: 20px;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-container">
+        <div class="logo-section">
+            <div class="logo">🏢 Rent2Tech</div>
+            <p class="tagline">Gestionale Noleggio Operativo</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="info@rent2tech.it" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-login" id="loginBtn">Accedi</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 30px; font-size: 12px; color: #999;">
+            v1.0 | Powered by Supabase + Vercel
+        </p>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboard" class="dashboard">
+        <div class="header">
+            <div class="header-title">📋 Gestionale Rent2Tech</div>
+            <div class="header-right">
+                <div class="user-info">
+                    Utente: <strong id="userEmail"></strong>
+                </div>
+                <button class="btn-logout" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Nuova Pratica -->
+            <div class="card">
+                <div class="card-title">➕ Crea Nuova Pratica</div>
+
+                <div id="formErrorMessage" class="error-message"></div>
+                <div id="formSuccessMessage" class="success-message"></div>
+
+                <form id="praticaForm">
+                    <div class="form-group-dashboard">
+                        <label>Numero Pratica</label>
+                        <input type="text" id="numeroPratica" placeholder="Es: PR-001" required>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Nome Cliente</label>
+                        <input type="text" id="clienteName" placeholder="Es: Azienda XYZ" required>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Descrizione Asset</label>
+                        <textarea id="assetDescription" placeholder="Es: Macchinario industriale..." required></textarea>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Valore Asset (€)</label>
+                        <input type="number" id="assetValue" placeholder="0.00" step="0.01" required>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Durata Noleggio (mesi)</label>
+                        <input type="number" id="rateMonths" placeholder="36" value="36" required>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Percentuale Provvigione (%)</label>
+                        <input type="number" id="commissionPercentage" placeholder="5.00" value="5" step="0.1" required>
+                    </div>
+
+                    <div class="form-group-dashboard">
+                        <label>Allega File (Documentazione)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileUpload').click()">
+                            <input type="file" id="fileUpload" multiple>
+                            <span id="fileLabel">📁 Clicca per caricare file</span>
+                        </div>
+                        <div id="fileList" style="margin-top: 10px; font-size: 12px; color: #666;"></div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">💾 Salva Pratica</button>
+                </form>
+            </div>
+
+            <!-- Preventivatore -->
+            <div class="card">
+                <div class="card-title">💰 Preventivatore Noleggio Operativo</div>
+
+                <div class="form-group-dashboard">
+                    <label>Valore Asset (€)</label>
+                    <input type="number" id="calcValue" placeholder="50000" step="0.01" onchange="calculateRate()">
+                </div>
+
+                <div class="form-group-dashboard">
+                    <label>Durata (mesi)</label>
+                    <input type="number" id="calcMonths" placeholder="36" value="36" step="1" onchange="calculateRate()">
+                </div>
+
+                <div class="form-group-dashboard">
+                    <label>Percentuale Noleggio (%)</label>
+                    <input type="number" id="calcRate" placeholder="2.5" value="2.5" step="0.1" onchange="calculateRate()">
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #f0f4ff; border-radius: 8px;">
+                    <div style="font-size: 12px; color: #666; margin-bottom: 10px;">Rata Mensile Calcolata:</div>
+                    <div style="font-size: 32px; font-weight: bold; color: #667eea;">
+                        €<span id="resultRate">0.00</span>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px; font-size: 12px; color: #666; line-height: 1.6;">
+                    <strong>Note:</strong><br>
+                    • La provvigione potrà variare in funzione dei limiti di policy<br>
+                    • Il canone mensile ha finalità informativa<br>
+                    • Non sono previsti anticipi o garanzie aggiuntive<br>
+                    • Gli asset possono prevedere assicurazione a carico cliente<br>
+                    • Il fornitore deve impegnarsi al riacquisto (condizione 3%)
+                </div>
+            </div>
+
+            <!-- Lista Pratiche -->
+            <div class="card pratiche-list">
+                <div class="card-title">📚 Le Mie Pratiche</div>
+                <div id="praticheLista"></div>
+                <div id="noPratiche" style="text-align: center; color: #999; padding: 40px 0;">
+                    Nessuna pratica ancora creata
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase Library -->
+    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.43.4/dist/module.js"></script>
+
+    <script>
+        // ========== CONFIGURAZIONE SUPABASE ==========
+        const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || 'https://YOUR_PROJECT.supabase.co';
+        const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || 'YOUR_ANON_KEY';
+
+        let supabase;
+        let currentUser = null;
+
+        // Inizializza Supabase
+        async function initSupabase() {
+            const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2');
+            supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            checkSession();
+        }
+
+        // Controlla sessione
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                showDashboard();
+            }
+        }
+
+        // ========== LOGIN ==========
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('errorMessage');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Accesso in corso...';
+            errorDiv.classList.remove('show');
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+
+                currentUser = data.user;
+                showDashboard();
+            } catch (error) {
+                errorDiv.textContent = '❌ Errore: ' + error.message;
+                errorDiv.classList.add('show');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Accedi';
+            }
+        });
+
+        // ========== LOGOUT ==========
+        async function logout() {
+            await supabase.auth.signOut();
+            location.reload();
+        }
+
+        // ========== GESTIONE UI ==========
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'flex';
+            document.getElementById('userEmail').textContent = currentUser.email;
+            loadPratiche();
+        }
+
+        // ========== CALCOLO RATA ==========
+        function calculateRate() {
+            const value = parseFloat(document.getElementById('calcValue').value) || 0;
+            const months = parseInt(document.getElementById('calcMonths').value) || 1;
+            const ratePercent = parseFloat(document.getElementById('calcRate').value) || 0;
+
+            const monthlyRate = (value * (ratePercent / 100)) / months;
+            document.getElementById('resultRate').textContent = monthlyRate.toFixed(2);
+        }
+
+        // ========== GESTIONE FILE ==========
+        let selectedFiles = [];
+
+        document.getElementById('fileUpload').addEventListener('change', (e) => {
+            selectedFiles = Array.from(e.target.files);
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = selectedFiles.map(f => `📄 ${f.name} (${(f.size / 1024).toFixed(2)} KB)`).join('<br>');
+        });
+
+        // ========== SALVA PRATICA ==========
+        document.getElementById('praticaForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formError = document.getElementById('formErrorMessage');
+            const formSuccess = document.getElementById('formSuccessMessage');
+            formError.classList.remove('show');
+            formSuccess.classList.remove('show');
+
+            try {
+                const value = parseFloat(document.getElementById('assetValue').value);
+                const months = parseInt(document.getElementById('rateMonths').value);
+                const commission = parseFloat(document.getElementById('commissionPercentage').value);
+                const monthlyRate = (value * (commission / 100)) / months;
+
+                // Salva pratica
+                const { data: pratica, error: praticaError } = await supabase
+                    .from('pratiche')
+                    .insert([{
+                        user_id: currentUser.id,
+                        numero_pratica: document.getElementById('numeroPratica').value,
+                        cliente_name: document.getElementById('clienteName').value,
+                        asset_description: document.getElementById('assetDescription').value,
+                        asset_value: value,
+                        rate_months: months,
+                        monthly_rate: monthlyRate,
+                        commission_percentage: commission
+                    }])
+                    .select();
+
+                if (praticaError) throw praticaError;
+
+                // Upload file
+                if (selectedFiles.length > 0) {
+                    for (const file of selectedFiles) {
+                        const filePath = `${currentUser.id}/${pratica[0].id}/${Date.now()}-${file.name}`;
+
+                        const { error: uploadError } = await supabase.storage
+                            .from('pratiche-files')
+                            .upload(filePath, file);
+
+                        if (uploadError) throw uploadError;
+
+                        // Salva riferimento file nel database
+                        await supabase
+                            .from('files')
+                            .insert([{
+                                pratica_id: pratica[0].id,
+                                file_name: file.name,
+                                file_type: file.type,
+                                file_size: file.size,
+                                file_url: filePath
+                            }]);
+                    }
+                }
+
+                formSuccess.textContent = '✅ Pratica salvata con successo!';
+                formSuccess.classList.add('show');
+
+                document.getElementById('praticaForm').reset();
+                selectedFiles = [];
+                document.getElementById('fileList').innerHTML = '';
+
+                setTimeout(() => loadPratiche(), 1000);
+            } catch (error) {
+                formError.textContent = '❌ Errore: ' + error.message;
+                formError.classList.add('show');
+            }
+        });
+
+        // ========== CARICA PRATICHE ==========
+        async function loadPratiche() {
+            try {
+                const { data, error } = await supabase
+                    .from('pratiche')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const lista = document.getElementById('praticheLista');
+                const noPratiche = document.getElementById('noPratiche');
+
+                if (data.length === 0) {
+                    lista.innerHTML = '';
+                    noPratiche.style.display = 'block';
+                } else {
+                    noPratiche.style.display = 'none';
+                    lista.innerHTML = data.map(p => `
+                        <div class="pratica-item">
+                            <div class="pratica-info">
+                                <div class="pratica-numero">${p.numero_pratica} - ${p.cliente_name}</div>
+                                <div class="pratica-dettagli">
+                                    Asset: €${p.asset_value.toFixed(2)} | Rata: €${p.monthly_rate.toFixed(2)}/mese
+                                </div>
+                            </div>
+                            <div class="pratica-status status-${p.status}">${p.status.toUpperCase()}</div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Errore caricamento pratiche:', error);
+            }
+        }
+
+        // Inizializza
+        initSupabase();
+    </script>
+</body>
+</html>
