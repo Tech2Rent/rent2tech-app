@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tech2Rent App</title>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"></script>
     <style>
         * {
             margin: 0;
@@ -60,32 +62,35 @@
             letter-spacing: 0.5px;
         }
 
-        .demo-section {
+        .auth-section {
             margin-top: 40px;
+            text-align: left;
         }
 
-        .demo-section h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 15px;
-            font-weight: 600;
+        .input-group {
+            margin-bottom: 20px;
         }
 
-        .demo-section p {
-            color: #666;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 30px;
+        .input-group input {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background: #f6f6fa;
+            font-size: 16px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: border .2s;
         }
 
-        .demo-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .input-group input:focus {
+            outline: none;
+            border-color: #764ba2;
+            background: #fff;
         }
 
         .demo-btn {
-            padding: 14px 30px;
+            width: 100%;
+            padding: 14px 0;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
@@ -102,25 +107,10 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .demo-btn:active {
-            transform: translateY(0);
-        }
-
-        .warning-box {
-            margin-top: 30px;
-            padding: 15px;
-            background: #fff3cd;
-            border: 1px solid #ffc107;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #856404;
-            line-height: 1.6;
-        }
-
-        .warning-box strong {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
+        #loginMessage {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
         }
 
         .footer {
@@ -133,7 +123,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Responsivo */
+        /* Responsive */
         @media (max-width: 600px) {
             .card {
                 padding: 40px 25px;
@@ -141,10 +131,6 @@
 
             .app-title {
                 font-size: 28px;
-            }
-
-            .demo-section h2 {
-                font-size: 20px;
             }
         }
     </style>
@@ -159,21 +145,20 @@
                 <p class="app-subtitle">Gestionale Noleggio Operativo</p>
             </div>
 
-            <!-- Demo Section -->
-            <div class="demo-section">
-                <h2>🎉 Benvenuto</h2>
-                <p>Sistema di gestione innovativo per il noleggio operativo. Accedi per iniziare.</p>
-                
-                <div class="demo-buttons">
-                    <button onclick="enterDemo()" class="demo-btn">
-                        📊 Accedi (Modalità Demo)
+            <!-- Autenticazione -->
+            <div class="auth-section">
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="input-group">
+                        <input type="email" id="email" placeholder="Email" required autocomplete="username">
+                    </div>
+                    <div class="input-group">
+                        <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="demo-btn">
+                        🔐 Accedi
                     </button>
-                </div>
-
-                <div class="warning-box">
-                    <strong>⚠️ Versione DEMO</strong>
-                    Questa è una versione di anteprima. Le funzionalità complete saranno disponibili nella prossima versione.
-                </div>
+                </form>
+                <div id="loginMessage"></div>
             </div>
 
             <!-- Footer -->
@@ -184,9 +169,26 @@
     </div>
 
     <script>
-        function enterDemo() {
-            alert('✅ Accesso demo confermato!\n\nBenvenuto in Tech2Rent\n\nFunzionalità in sviluppo...');
-            // Qui potrai aggiungere il dashboard in futuro
+        const SUPABASE_URL = 'https://bxebimhellilckhzzvqe.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4ZWJpbWhlbGxpbGNraHp6dnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MTkxMTQsImV4cCI6MjA3Nzk5NTExNH0.KEpOaIheZaZOCqvf6xnI4KtBrxTayPvp6dIFebsnkt8';
+
+        const supabase = supabasejs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageDiv = document.getElementById('loginMessage');
+            messageDiv.textContent = '';
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                messageDiv.textContent = 'Email o password errata';
+                messageDiv.style.color = "#e3342f";
+                return;
+            }
+            messageDiv.style.color = '#38b000';
+            messageDiv.textContent = 'Login effettuato con successo!';
+            setTimeout(()=>location.reload(), 1200);
         }
     </script>
 </body>
