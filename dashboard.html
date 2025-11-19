@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Tech2Rent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: radial-gradient(ellipse at top left, #c3e0fa 0%, #a7a7e9 60%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 28px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 10px 44px rgba(55, 60, 110, 0.13);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f5;
+    }
+
+    .dashboard-header h1 { color: #596afb; margin: 0; font-size: 28px; }
+    .user-info { display: flex; align-items: center; gap: 15px; }
+    .user-email { color: #8f9bc7; font-weight: 500; }
+    
+    .btn-logout {
+      padding: 8px 16px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .btn-logout:hover { background: #c0392b; }
+
+    h2 { color: #596afb; margin: 30px 0 20px 0; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    table th, table td {
+      border: 1.5px solid #e7e7ef;
+      padding: 12px 8px;
+      font-size: 14px;
+      text-align: left;
+    }
+
+    table th {
+      background: #fcfcff;
+      color: #7a81b7;
+      font-weight: 600;
+    }
+
+    table tbody tr:hover { background: #f8f9fb; }
+
+    .box {
+      background: #f8f9fb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid #596afb;
+    }
+
+    .box h3 { color: #596afb; margin-top: 0; margin-bottom: 16px; }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #7a81b7;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e3e8fb;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #596afb;
+      background: #f7f8fa;
+    }
+
+    .required-docs {
+      background: #f0f7ff;
+      border-left: 4px solid #2196F3;
+      padding: 16px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    .required-docs h4 {
+      color: #2196F3;
+      margin: 0 0 12px 0;
+      font-size: 14px;
+    }
+
+    .doc-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+    }
+
+    .doc-item input[type="file"] {
+      display: none;
+    }
+
+    .doc-item label {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      color: #7a81b7;
+    }
+
+    .doc-status {
+      margin-left: auto;
+      font-weight: 600;
+    }
+
+    .doc-status.pending { color: #ff9800; }
+    .doc-status.uploaded { color: #4caf50; }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 12px;
+      background: #596afb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover { background: #4856d8; }
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
+
+    .btn-secondary {
+      flex: 1;
+      padding: 12px;
+      background: #e7e7ef;
+      color: #7a81b7;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover { background: #d8d8e8; }
+
+    .error-message {
+      color: #e74c3c;
+      font-weight: 600;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .success-message {
+      color: #27ae60;
+      font-weight: 600;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .hidden { display: none; }
+
+    .btn-upload {
+      background: #667eea;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .btn-upload:hover { background: #5568d3; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .status-pending { background: #fff3e0; color: #e65100; }
+    .status-verde { background: #e8f5e9; color: #2e7d32; }
+    .status-giallo { background: #fff9c4; color: #f57f17; }
+    .status-rosso { background: #ffebee; color: #c62828; }
+
+    .note-section {
+      background: #f5f5f5;
+      border-left: 4px solid #999;
+      padding: 12px;
+      border-radius: 4px;
+      margin: 12px 0;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .note-section strong { display: block; color: #333; margin-bottom: 6px; }
+
+    .files-list {
+      background: #f8f9fb;
+      border-radius: 6px;
+      padding: 12px;
+      margin: 12px 0;
+    }
+
+    .file-item {
+      background: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .file-item a {
+      color: #596afb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .file-item a:hover { text-decoration: underline; }
+
+    .btn-preventivatore {
+      display: inline-block;
+      padding: 10px 20px;
+      background: #667eea;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      margin-left: 10px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-preventivatore:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h1>📊 Dashboard Tech2Rent</h1>
+      <div class="user-info">
+        <span class="user-email" id="user-email">Caricamento...</span>
+        <button class="btn-logout" id="logout-btn">🚪 Logout</button>
+      </div>
+    </div>
+
+    <!-- Nuova Pratica (FASE 1 CON UPLOAD OBBLIGATORI) -->
+    <div id="newPraticaBox" class="box hidden">
+      <h3>➕ Nuova Pratica</h3>
+      <form id="fnew">
+        <!-- Dati Cliente -->
+        <div class="form-group">
+          <label for="naz">Denominazione Cliente *</label>
+          <input type="text" id="naz" placeholder="Es: Rossi Mario S.r.l." required>
+        </div>
+
+        <div class="form-group">
+          <label for="npiva">P.IVA / Codice Fiscale *</label>
+          <input type="text" id="npiva" placeholder="Es: 12345678901" required>
+        </div>
+
+        <div class="form-group">
+          <label for="ntipo">Tipologia Noleggio *</label>
+          <select id="ntipo" required onchange="updateRequiredDocs()">
+            <option value="">-- Seleziona tipologia --</option>
+            <option value="investimento">Investimento</option>
+            <option value="rent-back">Rent-Back</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="nimp">Importo (€) *</label>
+          <input type="number" id="nimp" placeholder="Es: 50000" step="0.01" required>
+        </div>
+
+        <div class="form-group">
+          <label for="nmonth">Durata Mesi *</label>
+          <select id="nmonth" required>
+            <option value="">-- Seleziona durata --</option>
+            <option value="36">36 mesi</option>
+            <option value="48">48 mesi</option>
+            <option value="60">60 mesi</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ncomm">Percentuale Commissione (%) *</label>
+          <select id="ncomm" required>
+            <option value="">-- Seleziona commissione --</option>
+            <option value="1">1%</option>
+            <option value="2">2%</option>
+            <option value="3">3%</option>
+            <option value="4">4%</option>
+            <option value="5">5%</option>
+            <option value="6">6%</option>
+            <option value="7">7%</option>
+            <option value="8">8%</option>
+          </select>
+        </div>
+
+        <!-- DOCUMENTI OBBLIGATORI (FASE 1) -->
+        <div class="required-docs">
+          <h4>📎 Documenti Obbligatori *</h4>
+          
+          <!-- Visura Camerale (sempre obbligatoria) -->
+          <div class="doc-item">
+            <input type="file" id="doc_visura" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            <label for="doc_visura">
+              📄 Visura Camerale Aggiornata
+            </label>
+            <span class="doc-status pending" id="status_visura">⏳ Non caricato</span>
+          </div>
+
+          <!-- Documento Specifico per Tipologia -->
+          <div class="doc-item" id="doc_tipo_container">
+            <input type="file" id="doc_tipo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required>
+            <label for="doc_tipo" id="label_doc_tipo">
+              📄 Preventivo Fornitura
+            </label>
+            <span class="doc-status pending" id="status_doc_tipo">⏳ Non caricato</span>
+          </div>
+        </div>
+
+        <div id="err" class="error-message"></div>
+        <div id="success" class="success-message"></div>
+
+        <div class="btn-group">
+          <button type="submit" class="btn-primary" id="btnCreate">✅ Crea Pratica</button>
+          <button type="button" class="btn-secondary" onclick="document.getElementById('newPraticaBox').classList.add('hidden')">❌ Annulla</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Tabella Pratiche -->
+    <h2>📋 Le Tue Pratiche</h2>
+    <div style="overflow-x: auto;">
+      <table id="userTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Cliente</th>
+            <th>Tipo</th>
+            <th>Importo</th>
+            <th>Stato</th>
+            <th>Semaforo</th>
+            <th>Note Admin</th>
+            <th>Documenti</th>
+            <th>Azioni</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="9">Caricamento pratiche...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Bottoni Azioni -->
+    <button class="btn-upload" onclick="document.getElementById('newPraticaBox').classList.remove('hidden')">➕ Nuova Pratica</button>
+    <a href="preventivatore.html" class="btn-preventivatore">💰 Preventivatore</a>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://bxebimhellilckhzzvqe.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4ZWJpbWhlbGxpbGNraHp6dnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MTkxMTQsImV4cCI6MjA3Nzk5NTExNH0.KEpOaIheZaZOCqvf6xnI4KtBrxTayPvp6dIFebsnkt8';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentUserId = null;
+    let currentUserEmail = null;
+
+    // Update Required Docs Label
+    function updateRequiredDocs() {
+      const tipologia = document.getElementById('ntipo').value;
+      const label = document.getElementById('label_doc_tipo');
+      
+      if (tipologia === 'investimento') {
+        label.textContent = '📄 Preventivo Fornitura';
+      } else if (tipologia === 'rent-back') {
+        label.textContent = '📄 Fattura Acquisto';
+      }
+    }
+
+    // File Change Handlers
+    document.getElementById('doc_visura').addEventListener('change', (e) => {
+      document.getElementById('status_visura').textContent = e.target.files.length > 0 ? '✅ Caricato' : '⏳ Non caricato';
+      document.getElementById('status_visura').classList.toggle('uploaded', e.target.files.length > 0);
+      document.getElementById('status_visura').classList.toggle('pending', e.target.files.length === 0);
+    });
+
+    document.getElementById('doc_tipo').addEventListener('change', (e) => {
+      document.getElementById('status_doc_tipo').textContent = e.target.files.length > 0 ? '✅ Caricato' : '⏳ Non caricato';
+      document.getElementById('status_doc_tipo').classList.toggle('uploaded', e.target.files.length > 0);
+      document.getElementById('status_doc_tipo').classList.toggle('pending', e.target.files.length === 0);
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    // Init
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        window.location.href = 'index.html';
+      } else {
+        currentUserId = session.user.id;
+        currentUserEmail = session.user.email;
+        document.getElementById('user-email').textContent = currentUserEmail;
+        loadPratiche();
+      }
+    });
+
+    // Form Submit - Crea Pratica CON UPLOAD DOCUMENTI
+    document.getElementById('fnew').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const errDiv = document.getElementById('err');
+      const successDiv = document.getElementById('success');
+      errDiv.style.display = 'none';
+      successDiv.style.display = 'none';
+
+      // Leggi form
+      const v = (x) => document.getElementById(x).value.trim();
+      const vnaz = v('naz');
+      const vnpiva = v('npiva');
+      const vntipo = v('ntipo');
+      const vnimp = parseFloat(v('nimp'));
+      const vnmonth = parseInt(v('nmonth'));
+      const vncomm = parseInt(v('ncomm'));
+
+      // Leggi file
+      const fileVisura = document.getElementById('doc_visura').files[0];
+      const fileDocTipo = document.getElementById('doc_tipo').files[0];
+
+      // Validazione
+      if (!vnaz || !vnpiva || !vntipo || !vnimp || !vnmonth || !vncomm) {
+        errDiv.textContent = '⚠️ Compila tutti i campi!';
+        errDiv.style.display = 'block';
+        return;
+      }
+
+      if (!fileVisura || !fileDocTipo) {
+        errDiv.textContent = '⚠️ Carica TUTTI i documenti obbligatori!';
+        errDiv.style.display = 'block';
+        return;
+      }
+
+      try {
+        // STEP 1: Crea pratica
+        const praticaNum = "PR-" + Date.now();
+        const { data: pratiche, error: errPratica } = await supabase
+          .from('pratiche')
+          .insert([{
+            user_id: currentUserId,
+            user_email: currentUserEmail,
+            numero_pratica: praticaNum,
+            cliente_name: vnaz,
+            piva: vnpiva,
+            tipologia: vntipo,
+            asset_description: "Descrizione: " + vntipo,
+            asset_value: vnimp,
+            rate_months: vnmonth,
+            monthly_rate: vnimp / vnmonth,
+            commission_percentage: vncomm,
+            status: 'pending',
+            semaforo: 'pending',
+            required_docs_uploaded: true
+          }])
+          .select();
+
+        if (errPratica) throw errPratica;
+
+        const praticaId = pratiche[0].id;
+
+        // STEP 2: Upload Documenti
+        const folderPath = `${currentUserId}/${praticaId}`;
+
+        // Upload Visura
+        const { error: errVisura } = await supabase.storage
+          .from('pratiche-documents')
+          .upload(`${folderPath}/visura_camerale_${Date.now()}.pdf`, fileVisura);
+
+        if (errVisura) throw new Error('Errore upload Visura: ' + errVisura.message);
+
+        // Upload Doc Tipo
+        const docTipoName = vntipo === 'investimento' ? 'preventivo' : 'fattura';
+        const { error: errDocTipo } = await supabase.storage
+          .from('pratiche-documents')
+          .upload(`${folderPath}/${docTipoName}_${Date.now()}.pdf`, fileDocTipo);
+
+        if (errDocTipo) throw new Error('Errore upload documento: ' + errDocTipo.message);
+
+        // STEP 3: Success
+        successDiv.textContent = '✅ Pratica creata con documenti! In attesa di revisione admin.';
+        successDiv.style.display = 'block';
+
+        // Reset form
+        document.getElementById('fnew').reset();
+        document.getElementById('newPraticaBox').classList.add('hidden');
+
+        // Reload
+        setTimeout(() => {
+          loadPratiche();
+          successDiv.style.display = 'none';
+        }, 2000);
+
+      } catch (err) {
+        console.error('Errore:', err);
+        errDiv.textContent = '❌ Errore: ' + err.message;
+        errDiv.style.display = 'block';
+      }
+    };
+
+    // Load Pratiche
+    async function loadPratiche() {
+      try {
+        const { data: pratiche, error } = await supabase
+          .from('pratiche')
+          .select('*')
+          .eq('user_id', currentUserId)
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!pratiche || pratiche.length === 0) {
+          document.getElementById('tableBody').innerHTML = '<tr><td colspan="9">Nessuna pratica</td></tr>';
+          return;
+        }
+
+        let html = '';
+        pratiche.forEach((p, i) => {
+          const semaforoClass = `status-${p.semaforo || 'pending'}`;
+          const semaforoEmoji = p.semaforo === 'verde' ? '🟢' : p.semaforo === 'giallo' ? '🟡' : p.semaforo === 'rosso' ? '🔴' : '⏳';
+
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td><strong>${p.cliente_name || '-'}</strong></td>
+              <td>${p.tipologia || '-'}</td>
+              <td>€ ${(p.asset_value || 0).toLocaleString('it-IT')}</td>
+              <td>${p.status || '-'}</td>
+              <td><span class="status-badge ${semaforoClass}">${semaforoEmoji} ${p.semaforo || 'In attesa'}</span></td>
+              <td><small>${p.admin_notes || '-'}</small></td>
+              <td><small>${p.required_docs_uploaded ? '✅ Caricati' : '⏳ In attesa'}</small></td>
+              <td>
+                <button class="btn-upload" onclick="viewPratica('${p.id}')" style="padding: 6px 10px; font-size: 12px;">👁️ Dettagli</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        document.getElementById('tableBody').innerHTML = html;
+      } catch (err) {
+        console.error('Errore:', err);
+        document.getElementById('tableBody').innerHTML = '<tr><td colspan="9">❌ Errore caricamento</td></tr>';
+      }
+    }
+
+    function viewPratica(praticaId) {
+      alert('🔜 Dettagli pratica #' + praticaId);
+    }
+  </script>
+</body>
+</html>

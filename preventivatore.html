@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Preventivatore - Tech2Rent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: radial-gradient(ellipse at top left, #c3e0fa 0%, #a7a7e9 60%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(55, 60, 110, .1);
+    }
+    
+    .header h1 {
+      color: #596afb;
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #7a81b7;
+      font-size: 14px;
+    }
+    
+    .back-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #e7e7ef;
+      color: #7a81b7;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+    
+    .back-btn:hover {
+      background: #d8d8e8;
+    }
+    
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(55, 60, 110, .1);
+    }
+    
+    .card h2 {
+      color: #596afb;
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+    
+    .form-group {
+      margin-bottom: 16px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #7a81b7;
+      font-size: 14px;
+    }
+    
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1.5px solid #e3e8fb;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #596afb;
+      background: #f7f8fa;
+    }
+    
+    .btn-calcola {
+      width: 100%;
+      padding: 12px;
+      background: #596afb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    
+    .btn-calcola:hover {
+      background: #4856d8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(89, 106, 251, .3);
+    }
+    
+    .risultati {
+      background: #f8f9fb;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #596afb;
+    }
+    
+    .risultato-item {
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e3e8fb;
+    }
+    
+    .risultato-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    
+    .risultato-label {
+      font-weight: 600;
+      color: #7a81b7;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    
+    .risultato-valore {
+      font-size: 24px;
+      font-weight: 700;
+      color: #596afb;
+    }
+    
+    .risultato-valore.small {
+      font-size: 16px;
+      color: #595959;
+    }
+    
+    .tabella-coefficienti {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(55, 60, 110, .1);
+    }
+    
+    .tabella-coefficienti h2 {
+      color: #596afb;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    table th {
+      background: #fcfcff;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #7a81b7;
+      border-bottom: 2px solid #e3e8fb;
+      font-size: 13px;
+    }
+    
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid #e3e8fb;
+      font-size: 13px;
+    }
+    
+    table tbody tr:hover {
+      background: #f8f9fb;
+    }
+    
+    .info-box {
+      background: #e8f5e9;
+      border-left: 4px solid #2e7d32;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #1b5e20;
+      line-height: 1.6;
+    }
+    
+    .error {
+      background: #ffebee;
+      border-left: 4px solid #c62828;
+      padding: 12px;
+      border-radius: 6px;
+      color: #c62828;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+    }
+    
+    .error.active {
+      display: block;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    
+    .btn-group button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    
+    .btn-reset {
+      background: #e7e7ef;
+      color: #7a81b7;
+    }
+    
+    .btn-reset:hover {
+      background: #d8d8e8;
+    }
+    
+    .btn-export {
+      background: #1ac27b;
+      color: white;
+    }
+    
+    .btn-export:hover {
+      background: #15a066;
+    }
+  </style>
+</head>
+<body>
+  <a href="dashboard.html" class="back-btn">← Torna alla Dashboard</a>
+
+  <div class="header">
+    <h1>💰 Preventivatore Tech2Rent</h1>
+    <p>Calcola il canone mensile del leasing operativo</p>
+  </div>
+
+  <div class="content">
+    <!-- INPUT CARD -->
+    <div class="card">
+      <h2>📊 Inserisci Dati</h2>
+      
+      <div id="error" class="error"></div>
+
+      <div class="form-group">
+        <label for="importo">Importo Imponibile (€) *</label>
+        <input type="number" id="importo" placeholder="Es: 100000" step="0.01" min="0" required>
+      </div>
+
+      <div class="form-group">
+        <label for="durata">Durata Mesi *</label>
+        <select id="durata" required>
+          <option value="">-- Seleziona --</option>
+          <option value="24">24 mesi</option>
+          <option value="36">36 mesi</option>
+          <option value="48">48 mesi</option>
+          <option value="60">60 mesi</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="commissione">Commissione Desiderata (%) *</label>
+        <input type="number" id="commissione" placeholder="Es: 2" step="0.1" min="0" max="10" required>
+      </div>
+
+      <button class="btn-calcola" onclick="calcola()">🧮 Calcola Canone</button>
+
+      <div class="info-box">
+        <strong>ℹ️ Note Importanti:</strong><br>
+        • La provvigione è "desiderata" perché potrà variare in base ai limiti di policy<br>
+        • Il canone mensile indicato ha finalità informativa e rappresenta il valore massimo applicabile<br>
+        • Non sono previsti anticipi né garanzie aggiuntive<br>
+        • Gli asset possono prevedere la stipula assicurativa direttamente a carico del cliente<br>
+        • Il Fornitore deve impegnarsi al riacquisto dell'asset al termine del noleggio (condizione standard 3%)
+      </div>
+    </div>
+
+    <!-- RISULTATI CARD -->
+    <div class="card hidden" id="risultatiCard">
+      <h2>📈 Risultati</h2>
+      
+      <div class="risultati">
+        <div class="risultato-item">
+          <div class="risultato-label">Canone Mensile</div>
+          <div class="risultato-valore" id="canone">-</div>
+        </div>
+
+        <div class="risultato-item">
+          <div class="risultato-label">Totale Rate</div>
+          <div class="risultato-valore small" id="totaleRate">-</div>
+        </div>
+
+        <div class="risultato-item">
+          <div class="risultato-label">Importo Imponibile</div>
+          <div class="risultato-valore small" id="importoRis">-</div>
+        </div>
+
+        <div class="risultato-item">
+          <div class="risultato-label">Durata</div>
+          <div class="risultato-valore small" id="durataRis">-</div>
+        </div>
+
+        <div class="risultato-item">
+          <div class="risultato-label">Commissione Utente</div>
+          <div class="risultato-valore small" id="commissioneRis">-</div>
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button class="btn-reset" onclick="reset()">🔄 Nuovo Calcolo</button>
+        <button class="btn-export" onclick="exportPDF()">📥 Esporta PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // COEFFICIENTI GRENKE
+    const coefficienti = {
+      24: {
+        2500: 0.05347311827956991,
+        5000: 0.05344086021505377,
+        12000: 0.05297849462365592,
+        25000: 0.05289247311827958,
+        50000: 0.05207526881720431,
+        100000: 0.05143010752688173
+      },
+      36: {
+        2500: 0.03898924731182796,
+        5000: 0.03800000000000001,
+        12000: 0.03727956989247312,
+        25000: 0.0370215053763441,
+        50000: 0.0366236559139785,
+        100000: 0.03656989247311829
+      },
+      48: {
+        2500: 0.03309677419354839,
+        5000: 0.0296236559139785,
+        12000: 0.02930107526881721,
+        25000: 0.02894623655913979,
+        50000: 0.0289247311827957,
+        100000: 0.02890322580645161
+      },
+      60: {
+        2500: 0.02895698924731183,
+        5000: 0.02515053763440861,
+        12000: 0.02475268817204301,
+        25000: 0.02441935483870968,
+        50000: 0.02405376344086022,
+        100000: 0.02338709677419355
+      }
+    };
+
+    // Ottieni coefficiente con interpolazione
+    function getCoefficiente(importo, durata) {
+      const durataCoeff = coefficienti[durata];
+      if (!durataCoeff) return null;
+
+      const importi = Object.keys(durataCoeff).map(Number).sort((a, b) => a - b);
+      
+      if (importo <= importi[0]) return durataCoeff[importi[0]];
+      if (importo >= importi[importi.length - 1]) return durataCoeff[importi[importi.length - 1]];
+
+      // Interpolazione lineare
+      for (let i = 0; i < importi.length - 1; i++) {
+        const imp1 = importi[i];
+        const imp2 = importi[i + 1];
+        
+        if (importo >= imp1 && importo <= imp2) {
+          const coeff1 = durataCoeff[imp1];
+          const coeff2 = durataCoeff[imp2];
+          
+          const ratio = (importo - imp1) / (imp2 - imp1);
+          return coeff1 + (coeff2 - coeff1) * ratio;
+        }
+      }
+    }
+
+    function calcola() {
+      const error = document.getElementById('error');
+      error.classList.remove('active');
+
+      const importo = parseFloat(document.getElementById('importo').value);
+      const durata = parseInt(document.getElementById('durata').value);
+      const commissione = parseFloat(document.getElementById('commissione').value);
+
+      if (!importo || !durata || commissione === '') {
+        error.textContent = '⚠️ Compila tutti i campi obbligatori!';
+        error.classList.add('active');
+        return;
+      }
+
+      const coeff = getCoefficiente(importo, durata);
+      if (coeff === null) {
+        error.textContent = '❌ Errore nel calcolo del coefficiente!';
+        error.classList.add('active');
+        return;
+      }
+
+      // ✅ FORMULA CORRETTA: Calcolo con commissione totale 3% (2% utente + 1% admin)
+      const commissioneUtentePerc = commissione; // Percentuale inserita dall'utente (es: 2%)
+      const commissioneTotalePerc = commissioneUtentePerc + 1; // +1% retrocessione admin
+      
+      const commissioneUtenteEuro = importo * (commissioneUtentePerc / 100);
+      const commissioneTotaleEuro = importo * (commissioneTotalePerc / 100);
+      
+      const totaleFinanziare = importo + commissioneTotaleEuro;
+      const canoneMensile = totaleFinanziare * coeff;
+      const totaleRate = canoneMensile * durata;
+
+      // Mostra risultati
+      document.getElementById('canone').textContent = '€ ' + canoneMensile.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('totaleRate').textContent = '€ ' + totaleRate.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('importoRis').textContent = '€ ' + importo.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      document.getElementById('durataRis').textContent = durata + ' mesi';
+      document.getElementById('commissioneRis').textContent = '€ ' + commissioneUtenteEuro.toLocaleString('it-IT', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      document.getElementById('risultatiCard').classList.remove('hidden');
+    }
+
+    function reset() {
+      document.getElementById('importo').value = '';
+      document.getElementById('durata').value = '';
+      document.getElementById('commissione').value = '';
+      document.getElementById('risultatiCard').classList.add('hidden');
+      document.getElementById('error').classList.remove('active');
+    }
+
+    function exportPDF() {
+      alert('📥 Funzione esportazione PDF - In sviluppo!\nPer ora, usa Print (CTRL+P) per salvare come PDF');
+    }
+  </script>
+</body>
+</html>

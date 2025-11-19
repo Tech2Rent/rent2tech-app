@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Tech2Rent</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      background: radial-gradient(ellipse at top left, #c3e0fa 0%, #a7a7e9 60%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 40px auto;
+      padding: 28px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 10px 44px rgba(55, 60, 110, 0.13);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f0f0f5;
+    }
+
+    .dashboard-header h1 { color: #596afb; margin: 0; font-size: 28px; }
+    .user-info { display: flex; align-items: center; gap: 15px; }
+    .user-email { color: #8f9bc7; font-weight: 500; }
+    
+    .btn-logout {
+      padding: 8px 16px;
+      background: #e74c3c;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-logout:hover { background: #c0392b; }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #e7e7ef;
+    }
+
+    .tab {
+      padding: 12px 24px;
+      background: transparent;
+      border: none;
+      color: #7a81b7;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab:hover { color: #596afb; }
+    .tab.active {
+      color: #596afb;
+      border-bottom-color: #596afb;
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    h2 { color: #596afb; margin: 30px 0 20px 0; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-bottom: 24px;
+      font-size: 13px;
+    }
+
+    table th, table td {
+      border: 1.5px solid #e7e7ef;
+      padding: 10px 8px;
+      text-align: left;
+    }
+
+    table th {
+      background: #fcfcff;
+      color: #7a81b7;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    table tbody tr:hover { background: #f8f9fb; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .status-pending { background: #fff3e0; color: #e65100; }
+    .status-verde { background: #e8f5e9; color: #2e7d32; }
+    .status-giallo { background: #fff9c4; color: #f57f17; }
+    .status-rosso { background: #ffebee; color: #c62828; }
+
+    .btn-action {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      margin: 2px;
+    }
+
+    .btn-verify { background: #2196F3; color: white; }
+    .btn-verify:hover { background: #1976D2; }
+
+    .btn-docs { background: #4CAF50; color: white; }
+    .btn-docs:hover { background: #45a049; }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      overflow-y: auto;
+    }
+
+    .modal.active { display: block; }
+
+    .modal-content {
+      background: white;
+      margin: 50px auto;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #e7e7ef;
+    }
+
+    .modal-header h3 {
+      color: #596afb;
+      margin: 0;
+    }
+
+    .modal-close {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .modal-close:hover { background: #c0392b; }
+
+    .pratica-info {
+      background: #f8f9fb;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .pratica-info p {
+      margin: 8px 0;
+      font-size: 14px;
+    }
+
+    .pratica-info strong { color: #596afb; }
+
+    .docs-section {
+      background: #f0f7ff;
+      border-left: 4px solid #2196F3;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .docs-section h4 {
+      color: #2196F3;
+      margin: 0 0 12px 0;
+      font-size: 14px;
+    }
+
+    .doc-file {
+      background: white;
+      padding: 10px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .doc-file a {
+      color: #596afb;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .doc-file a:hover { text-decoration: underline; }
+
+    .semaforo-section {
+      background: #fff9c4;
+      border-left: 4px solid #f57f17;
+      padding: 15px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .semaforo-section h4 {
+      color: #f57f17;
+      margin: 0 0 12px 0;
+      font-size: 14px;
+    }
+
+    .semaforo-options {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .semaforo-radio {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 15px;
+      background: white;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .semaforo-radio:hover { border-color: #596afb; }
+    .semaforo-radio input { cursor: pointer; }
+
+    .notes-section {
+      margin: 20px 0;
+    }
+
+    .notes-section label {
+      display: block;
+      margin-bottom: 8px;
+      color: #7a81b7;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .notes-section textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 10px;
+      border: 1.5px solid #e3e8fb;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+    }
+
+    .notes-section textarea:focus {
+      outline: none;
+      border-color: #596afb;
+    }
+
+    .btn-save {
+      width: 100%;
+      padding: 12px;
+      background: #596afb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn-save:hover { background: #4856d8; }
+
+    .success-msg {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 15px;
+      display: none;
+      font-weight: 600;
+    }
+
+    .error-msg {
+      background: #ffebee;
+      color: #c62828;
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 15px;
+      display: none;
+      font-weight: 600;
+    }
+
+    /* Gestione Utenti Styles (existing) */
+    .box {
+      background: #f8f9fb;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border-left: 4px solid #596afb;
+    }
+
+    .box h3 { color: #596afb; margin-top: 0; }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      color: #7a81b7;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #e3e8fb;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #596afb;
+    }
+
+    .btn-primary {
+      padding: 12px 24px;
+      background: #596afb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover { background: #4856d8; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="dashboard-header">
+      <h1>👨‍💼 Admin Dashboard Tech2Rent</h1>
+      <div class="user-info">
+        <span class="user-email" id="admin-email">operations@tech2rent.it</span>
+        <button class="btn-logout" id="logout-btn">🚪 Logout</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('pratiche')">📊 Pratiche</button>
+      <button class="tab" onclick="switchTab('utenti')">👥 Gestione Utenti</button>
+    </div>
+
+    <!-- TAB PRATICHE -->
+    <div id="tab-pratiche" class="tab-content active">
+      <h2>📋 Tutte le Pratiche</h2>
+      
+      <div style="overflow-x: auto;">
+        <table id="praticheTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>N° Pratica</th>
+              <th>Cliente</th>
+              <th>Utente</th>
+              <th>Tipo</th>
+              <th>Importo</th>
+              <th>Semaforo</th>
+              <th>Docs</th>
+              <th>Azioni</th>
+            </tr>
+          </thead>
+          <tbody id="praticheBody">
+            <tr><td colspan="9">Caricamento...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB GESTIONE UTENTI (existing) -->
+    <div id="tab-utenti" class="tab-content">
+      <h2>👥 Gestione Utenti</h2>
+      
+      <div class="box">
+        <h3>➕ Crea Nuovo Utente</h3>
+        <form id="createUserForm">
+          <div class="form-group">
+            <label for="new-user-email">Email *</label>
+            <input type="email" id="new-user-email" placeholder="utente@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="new-user-password">Password *</label>
+            <input type="password" id="new-user-password" placeholder="Minimo 8 caratteri" required>
+          </div>
+
+          <div id="user-create-msg" class="success-msg"></div>
+          <div id="user-create-error" class="error-msg"></div>
+
+          <button type="submit" class="btn-primary">✅ Crea Utente</button>
+        </form>
+      </div>
+
+      <h2>📋 Utenti Esistenti</h2>
+      <table id="usersTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Email</th>
+            <th>Data Creazione</th>
+            <th>Ultimo Login</th>
+          </tr>
+        </thead>
+        <tbody id="usersBody">
+          <tr><td colspan="4">Caricamento utenti...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODAL VERIFICA PRATICA -->
+  <div id="modalVerifica" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>🔍 Verifica Pratica</h3>
+        <button class="modal-close" onclick="closeModal()">✕ Chiudi</button>
+      </div>
+
+      <div id="modalBody">
+        <!-- Pratica Info -->
+        <div class="pratica-info" id="praticaInfo"></div>
+
+        <!-- Documenti -->
+        <div class="docs-section" id="docsSection"></div>
+
+        <!-- Semaforo -->
+        <div class="semaforo-section">
+          <h4>🚦 Assegna Semaforo</h4>
+          <div class="semaforo-options">
+            <label class="semaforo-radio">
+              <input type="radio" name="semaforo" value="verde">
+              🟢 Verde (Approvato)
+            </label>
+            <label class="semaforo-radio">
+              <input type="radio" name="semaforo" value="giallo">
+              🟡 Giallo (Da integrare)
+            </label>
+            <label class="semaforo-radio">
+              <input type="radio" name="semaforo" value="rosso">
+              🔴 Rosso (Rifiutato)
+            </label>
+          </div>
+        </div>
+
+        <!-- Note Admin -->
+        <div class="notes-section">
+          <label for="adminNotes">📝 Note per l'Utente</label>
+          <textarea id="adminNotes" placeholder="Inserisci note visibili all'utente (opzionale)..."></textarea>
+        </div>
+
+        <div id="saveSuccess" class="success-msg"></div>
+        <div id="saveError" class="error-msg"></div>
+
+        <button class="btn-save" onclick="saveValutazione()">💾 Salva Valutazione</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://bxebimhellilckhzzvqe.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4ZWJpbWhlbGxpbGNraHp6dnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MTkxMTQsImV4cCI6MjA3Nzk5NTExNH0.KEpOaIheZaZOCqvf6xnI4KtBrxTayPvp6dIFebsnkt8';
+    const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4ZWJpbWhlbGxpbGNraHp6dnFlIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczMTkyNTExNCwiZXhwIjoyMDQ3NTAxMTE0fQ.d7z4RrqXrqWo4sTf9WU-CdNs_i75AUWKBRdLhDx16qc';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseAdmin = window.supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    let currentPratica = null;
+
+    // TAB SWITCH
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
+
+      if (tab === 'pratiche') loadPratiche();
+      if (tab === 'utenti') loadUsers();
+    }
+
+    // LOGOUT
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html';
+    });
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session || session.user.email !== 'operations@tech2rent.it') {
+        window.location.href = 'index.html';
+      } else {
+        loadPratiche();
+      }
+    });
+
+    // LOAD PRATICHE
+    async function loadPratiche() {
+      try {
+        const { data: pratiche, error } = await supabase
+          .from('pratiche')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (!pratiche || pratiche.length === 0) {
+          document.getElementById('praticheBody').innerHTML = '<tr><td colspan="9">Nessuna pratica</td></tr>';
+          return;
+        }
+
+        let html = '';
+        pratiche.forEach((p, i) => {
+          const semaforoClass = `status-${p.semaforo || 'pending'}`;
+          const semaforoEmoji = p.semaforo === 'verde' ? '🟢' : p.semaforo === 'giallo' ? '🟡' : p.semaforo === 'rosso' ? '🔴' : '⏳';
+
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td><strong>${p.numero_pratica || '-'}</strong></td>
+              <td>${p.cliente_name || '-'}</td>
+              <td><small>${p.user_email || '-'}</small></td>
+              <td>${p.tipologia || '-'}</td>
+              <td>€ ${(p.asset_value || 0).toLocaleString('it-IT')}</td>
+              <td><span class="status-badge ${semaforoClass}">${semaforoEmoji}</span></td>
+              <td>${p.required_docs_uploaded ? '✅' : '⏳'}</td>
+              <td>
+                <button class="btn-action btn-verify" onclick='openVerifica(${JSON.stringify(p)})'>🔍 Verifica</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        document.getElementById('praticheBody').innerHTML = html;
+      } catch (err) {
+        console.error('Errore:', err);
+        document.getElementById('praticheBody').innerHTML = '<tr><td colspan="9">❌ Errore</td></tr>';
+      }
+    }
+
+    // OPEN MODAL VERIFICA
+    async function openVerifica(pratica) {
+      currentPratica = pratica;
+      
+      // Pratica Info
+      document.getElementById('praticaInfo').innerHTML = `
+        <p><strong>N° Pratica:</strong> ${pratica.numero_pratica}</p>
+        <p><strong>Cliente:</strong> ${pratica.cliente_name}</p>
+        <p><strong>P.IVA:</strong> ${pratica.piva}</p>
+        <p><strong>Tipologia:</strong> ${pratica.tipologia}</p>
+        <p><strong>Importo:</strong> € ${pratica.asset_value.toLocaleString('it-IT')}</p>
+        <p><strong>Durata:</strong> ${pratica.rate_months} mesi</p>
+        <p><strong>Utente:</strong> ${pratica.user_email}</p>
+      `;
+
+      // Load Documenti
+      await loadDocumenti(pratica.user_id, pratica.id);
+
+      // Set Semaforo Attuale
+      if (pratica.semaforo && pratica.semaforo !== 'pending') {
+        document.querySelector(`input[name="semaforo"][value="${pratica.semaforo}"]`).checked = true;
+      }
+
+      // Set Note Attuali
+      document.getElementById('adminNotes').value = pratica.admin_notes || '';
+
+      // Show Modal
+      document.getElementById('modalVerifica').classList.add('active');
+    }
+
+    // CLOSE MODAL
+    function closeModal() {
+      document.getElementById('modalVerifica').classList.remove('active');
+      document.getElementById('saveSuccess').style.display = 'none';
+      document.getElementById('saveError').style.display = 'none';
+    }
+
+    // LOAD DOCUMENTI
+    async function loadDocumenti(userId, praticaId) {
+      try {
+        const folderPath = `${userId}/${praticaId}`;
+        
+        const { data: files, error } = await supabase.storage
+          .from('pratiche-documents')
+          .list(folderPath);
+
+        if (error) throw error;
+
+        if (!files || files.length === 0) {
+          document.getElementById('docsSection').innerHTML = `
+            <h4>📎 Documenti Caricati</h4>
+            <p>⚠️ Nessun documento trovato</p>
+          `;
+          return;
+        }
+
+        let docsHtml = '<h4>📎 Documenti Caricati</h4>';
+        
+        for (const file of files) {
+          const { data } = supabase.storage
+            .from('pratiche-documents')
+            .getPublicUrl(`${folderPath}/${file.name}`);
+
+          docsHtml += `
+            <div class="doc-file">
+              <a href="${data.publicUrl}" target="_blank">📄 ${file.name}</a>
+              <small>${(file.metadata?.size / 1024).toFixed(0)} KB</small>
+            </div>
+          `;
+        }
+
+        document.getElementById('docsSection').innerHTML = docsHtml;
+      } catch (err) {
+        console.error('Errore load docs:', err);
+        document.getElementById('docsSection').innerHTML = `
+          <h4>📎 Documenti Caricati</h4>
+          <p>❌ Errore caricamento documenti</p>
+        `;
+      }
+    }
+
+    // SAVE VALUTAZIONE
+    async function saveValutazione() {
+      const semaforo = document.querySelector('input[name="semaforo"]:checked')?.value;
+      const adminNotes = document.getElementById('adminNotes').value.trim();
+
+      if (!semaforo) {
+        document.getElementById('saveError').textContent = '⚠️ Seleziona un semaforo!';
+        document.getElementById('saveError').style.display = 'block';
+        return;
+      }
+
+      try {
+        const { error } = await supabase
+          .from('pratiche')
+          .update({
+            semaforo: semaforo,
+            admin_notes: adminNotes || null
+          })
+          .eq('id', currentPratica.id);
+
+        if (error) throw error;
+
+        document.getElementById('saveSuccess').textContent = '✅ Valutazione salvata con successo!';
+        document.getElementById('saveSuccess').style.display = 'block';
+        document.getElementById('saveError').style.display = 'none';
+
+        // Reload table
+        setTimeout(() => {
+          loadPratiche();
+          closeModal();
+        }, 1500);
+
+      } catch (err) {
+        console.error('Errore:', err);
+        document.getElementById('saveError').textContent = '❌ Errore: ' + err.message;
+        document.getElementById('saveError').style.display = 'block';
+        document.getElementById('saveSuccess').style.display = 'none';
+      }
+    }
+
+    // GESTIONE UTENTI (existing functions)
+    async function loadUsers() {
+      try {
+        const { data, error } = await supabaseAdmin.auth.admin.listUsers();
+        
+        if (error) throw error;
+
+        if (!data || !data.users || data.users.length === 0) {
+          document.getElementById('usersBody').innerHTML = '<tr><td colspan="4">Nessun utente</td></tr>';
+          return;
+        }
+
+        let html = '';
+        data.users.forEach((u, i) => {
+          html += `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${u.email}</td>
+              <td>${new Date(u.created_at).toLocaleDateString('it-IT')}</td>
+              <td>${u.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleDateString('it-IT') : 'Mai'}</td>
+            </tr>
+          `;
+        });
+
+        document.getElementById('usersBody').innerHTML = html;
+      } catch (err) {
+        console.error('Errore:', err);
+        document.getElementById('usersBody').innerHTML = '<tr><td colspan="4">❌ Errore caricamento</td></tr>';
+      }
+    }
+
+    document.getElementById('createUserForm').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('new-user-email').value.trim();
+      const password = document.getElementById('new-user-password').value.trim();
+
+      try {
+        const { data, error } = await supabaseAdmin.auth.admin.createUser({
+          email: email,
+          password: password,
+          email_confirm: true
+        });
+
+        if (error) throw error;
+
+        document.getElementById('user-create-msg').textContent = '✅ Utente creato con successo!';
+        document.getElementById('user-create-msg').style.display = 'block';
+        document.getElementById('user-create-error').style.display = 'none';
+
+        document.getElementById('createUserForm').reset();
+
+        setTimeout(() => {
+          loadUsers();
+          document.getElementById('user-create-msg').style.display = 'none';
+        }, 2000);
+
+      } catch (err) {
+        console.error('Errore:', err);
+        document.getElementById('user-create-error').textContent = '❌ Errore: ' + err.message;
+        document.getElementById('user-create-error').style.display = 'block';
+        document.getElementById('user-create-msg').style.display = 'none';
+      }
+    };
+  </script>
+</body>
+</html>
