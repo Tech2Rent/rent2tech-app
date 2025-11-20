@@ -21,56 +21,18 @@
       max-width: 450px;
       width: 90%;
     }
-    .logo-section {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-    .logo {
-      font-size: 48px;
-      margin-bottom: 16px;
-    }
-    h1 {
-      color: #596afb;
-      font-size: 32px;
-      margin-bottom: 8px;
-    }
-    .tagline {
-      color: #a3aec7;
-      font-size: 16px;
-    }
+    .logo-section { text-align: center; margin-bottom: 40px; }
+    .logo { font-size: 48px; margin-bottom: 16px; }
+    h1 { color: #596afb; font-size: 32px; margin-bottom: 8px; }
+    .tagline { color: #a3aec7; font-size: 16px; }
     .form-group { margin-bottom: 20px; }
     label { display: block; margin-bottom: 8px; color: #7a81b7; font-weight: 500; font-size: 14px; }
-    input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid #e3e8fb;
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-      transition: all 0.3s;
-    }
+    input { width: 100%; padding: 12px 16px; border: 1.5px solid #e3e8fb; border-radius: 8px; font-size: 14px; font-family: inherit; transition: all 0.3s; }
     input:focus { outline: none; border-color: #596afb; background: #f7f8fa; }
-    .btn-login {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #596afb 0%, #667eea 100%);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 24px;
-      transition: all 0.3s;
-    }
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(89, 106, 251, 0.3);
-    }
+    .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, #596afb 0%, #667eea 100%); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 24px; transition: all 0.3s; }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(89, 106, 251, 0.3); }
     .btn-login:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-    .error-message {
-      color: #e74c3c; font-size: 13px; margin-top: 8px; display: none;
-    }
+    .error-message { color: #e74c3c; font-size: 13px; margin-top: 8px; display: none; }
     .loading { display: none; text-align: center; color: #596afb; font-weight: 600; }
     .footer { text-align: center; margin-top: 24px; font-size: 12px; color: #a3aec7; }
   </style>
@@ -104,18 +66,21 @@
     const SUPABASE_URL = 'https://bxebimhellilckhzzvqe.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4ZWJpbWhlbGxpbGNraHp6dnFlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjI0MTkxMTQsImV4cCI6MjA3Nzk5NTExNH0.KEpOaIheZaZOCqvf6xnI4KtBrxTayPvp6dIFebsnkt8';
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
     const passwordInput = document.getElementById('password');
     const loginBtn = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('errorMsg');
     const loadingMsg = document.getElementById('loadingMsg');
+
     window.addEventListener('DOMContentLoaded', async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session) { redirectUser(session.user.email); }
       } catch (err) { console.error('Session check error:', err); }
     });
+
     loginForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = emailInput.value.trim();
@@ -141,6 +106,7 @@
         loadingMsg.style.display = 'none';
       }
     });
+
     function redirectUser(email) {
       if (email === 'operations@tech2rent.it') {
         window.location.href = 'admin.html';
